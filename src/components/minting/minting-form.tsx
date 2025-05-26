@@ -24,7 +24,7 @@ interface CustomAttribute {
 export function MintingForm() {
   const { address } = useAccount();
   const {
-    mint,
+    // mint,
     isConfirming,
     isSuccess,
     hash,
@@ -139,7 +139,7 @@ export function MintingForm() {
       setStep("minting");
       setIsMinting(true);
 
-      const hash = await mint(address!, metadataIPFSUrl);
+      // const hash = await mint(address!, metadataIPFSUrl);
     } catch (error) {
       console.error("Minting failed:", error);
       const friendlyMessage = parseErrorMessage(error);
