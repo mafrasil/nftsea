@@ -3,6 +3,7 @@
 import { useETHPrice } from "@/hooks/useETHPrice";
 import { resolveIPFSUrl } from "@/lib/ipfs";
 import { NFTMetadata } from "@/types/nft";
+import Image from "next/image";
 import { useState } from "react";
 import { EthIcon } from "../icons/eth";
 import { NFTDetailsModal } from "./nft-details-modal";
@@ -36,10 +37,12 @@ export function NFTCard({ tokenId, metadata, contractAddress }: NFTCardProps) {
       >
         {/* NFT Image */}
         <div className="aspect-[255/214] relative bg-gradient-to-br from-gray-100 to-gray-200 m-3 rounded-xl overflow-hidden">
-          <img
-            src={resolveIPFSUrl(metadata.image)}
-            alt={metadata.name}
-            className="w-full h-full object-cover"
+          <Image
+            src={resolveIPFSUrl(metadata?.image || "")}
+            alt={metadata?.name || `NFT #${tokenId}`}
+            fill
+            objectFit="cover"
+            objectPosition="center"
           />
           <div className="absolute top-2 right-2 bg-black/50 group-hover/nft-card:bg-black/70 transition-all duration-300 rounded-lg px-2 py-1 opacity-0 group-hover/nft-card:opacity-100">
             <span className="text-xs text-gray-300">#{tokenId}</span>

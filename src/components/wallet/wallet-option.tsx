@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { Connector } from "wagmi";
 
 interface WalletOptionProps {
-  connector: any;
+  connector: Connector;
   onConnect: () => void;
   isLoading: boolean;
 }

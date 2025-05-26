@@ -4,46 +4,80 @@ Simple demo project (Next.js, Tailwind, Shadcn UI, Wagmi, React Query) that demo
 
 # Fetching Implementation Notes
 
-### Current Implementation: Event-Based Fetching
+### Current Implementation (Dual Approach)
 
-`useUserNFTs` hook implements NFT fetching by querying blockchain Transfer events (approach was chosen due to limitations in the ERC-721 standard and the specific contract implementation)
+The project implements two different NFT fetching strategies:
 
-#### Known Limitations
+#### 1. Alchemy API Method (Primary - `useUserNFTsAlchemy`)
 
-- **Block Range Limitation**: Currently limited to the last 10,000 blocks
-- **Incomplete History**: NFTs received before this block range won't be detected
-- **Performance**: Multiple contract calls required for ownership verification + performance varies based on RPC provider and network congestion
+- Uses Alchemy's `getNFTsForOwner` endpoint
+- Access to all NFTs regardless of when they were minted
+- Automatic metadata resolution and caching
+- Better Performance: No multiple contract calls needed
+- Built-in error handling and retry logic
+
+#### 2. Event-Based Method (Fallback - `useUserNFTs`)
+
+- Uses blockchain events to fetch NFTs
+- No external dependencies
+- Full control over data fetching logic
+- Works with any contract
+
+**Limitations:**
+
+- Block Range Limitation: Currently limited to the last 10,000 blocks (~1-2 days)
+- Incomplete History: NFTs received before this block range won't be detected
+- Performance: Multiple contract calls required for ownership verification
+- Network Dependent: Performance varies based on RPC provider and network congestion
 
 #### Alternative Approaches Considered
 
 **1. ERC-721 Enumerable Extension**
 
-Much simpler implementation using `tokenOfOwnerByIndex()`, but not supported by the current contract implementation
+- Much simpler implementation using `tokenOfOwnerByIndex()`
+- Not supported by the current contract implementation
 
 **2. The Graph Protocol**
 
-Decentralized indexing, fast queries, real-time updates, GraphQL API
+- Decentralized indexing with GraphQL API
+- Real-time updates and fast queries
+- Requires subgraph deployment
 
-**3. Centralized Indexing Services**
+**3. Other Centralized Services**
 
-- **Alchemy NFT API**: `alchemy.nft.getNftsForOwner()`
 - **Moralis**: Built-in NFT queries with caching
-
-#### Current Implementation Rationale
-
-The event-based approach was implemented to:
-
-- Avoid external API dependencies (understanding of blockchain events)
-- Work with any ERC-721 contract (not requiring Enumerable extension)
-- Maintain full control over the data fetching logic
+- **Covalent**: Multi-chain support
 
 ## Quick Notes
 
 - Uses Sepolia testnet (get some test ETH first)
 - Pinata handles IPFS storage (because decentralization rocks)
 - ETH price display because why not (Bandchain Oracle)
-- Event-based NFT fetching
+- NFT fetching: Alchemy API or Event-based fallback
 
 ## Tech Stack
 
-Next.js 14, TypeScript, Tailwind, Wagmi, React Query, Pinata
+Next.js 14, TypeScript, Tailwind, Wagmi, React Query, Pinata, Alchemy API
+
+## Usage
+
+```bash
+# Install dependencies
+pnpm install
+
+# Set up environment variables
+cp .env.example .env
+
+# Run development server
+pnpm dev
+```
+
+## Architecture
+
+- **Frontend**: Next.js 14 with App Router
+- **Styling**: Tailwind CSS + Shadcn UI components
+- **Blockchain**: Wagmi for Ethereum interactions
+- **State Management**: React Query for server state
+- **IPFS**: Pinata for decentralized storage
+- **Indexing**: Alchemy API for NFT data
+- **Network**: Sepolia testnet

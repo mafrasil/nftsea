@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useNFTMint } from "@/hooks/useNFTContract";
+import { useContractBaseURI, useNFTMint } from "@/hooks/useNFTContract";
 import { Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
@@ -30,6 +30,7 @@ export function MintingForm() {
     hash,
     error: mintError,
   } = useNFTMint();
+  const { data: baseURI } = useContractBaseURI();
 
   const [step, setStep] = useState<MintingStep>("form");
   const [title, setTitle] = useState("");
@@ -74,10 +75,10 @@ export function MintingForm() {
   };
 
   // Helper function to parse error messages
-  const parseErrorMessage = (error: any): string => {
+  const parseErrorMessage = (error: Error | unknown): string => {
     if (!error) return "Unknown error occurred";
 
-    const errorMessage = error.message || error.toString();
+    const errorMessage = error instanceof Error ? error.message : String(error);
 
     // Handle user rejection
     if (
@@ -115,10 +116,12 @@ export function MintingForm() {
     return "Transaction failed. Please try again";
   };
 
-  const handleMint = async (listImmediately: boolean = false) => {
+  const handleMint = async () => {
     if (!address || !title || !description || !imageIPFSUrl) return;
 
     try {
+      console.log("🔍 DEBUG: Starting mint process");
+
       setStep("uploading");
       setIsUploadingMetadata(true);
       setError(null);
@@ -130,15 +133,13 @@ export function MintingForm() {
         getValidCustomAttributes()
       );
 
+      console.log("🔍 DEBUG: Metadata IPFS URL:", metadataIPFSUrl);
+
       setIsUploadingMetadata(false);
       setStep("minting");
       setIsMinting(true);
 
-      // Wait for the transaction to be sent
-      // const txHash = await mint(address, metadataIPFSUrl);
-
-      // Keep minting state until transaction is confirmed
-      // The success will be handled by the useEffect below
+      const hash = await mint(address!, metadataIPFSUrl);
     } catch (error) {
       console.error("Minting failed:", error);
       const friendlyMessage = parseErrorMessage(error);
@@ -190,6 +191,8 @@ export function MintingForm() {
   };
 
   const canMint = title && description && imageIPFSUrl && !isImageUploading;
+
+  console.log("🔍 DEBUG: Contract baseURI:", baseURI);
 
   return (
     <>
@@ -282,7 +285,6 @@ export function MintingForm() {
       <Dialog
         open={step !== "form"}
         onOpenChange={(open) => {
-          // Allow closing the dialog to reset to form state
           if (!open) {
             resetToForm();
           }

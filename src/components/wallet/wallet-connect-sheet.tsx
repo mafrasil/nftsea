@@ -8,7 +8,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useState } from "react";
-import { useAccount, useConnect } from "wagmi";
+import { Connector, useAccount, useConnect } from "wagmi";
 import { WalletOption } from "./wallet-option";
 
 interface WalletConnectSheetProps {
@@ -20,7 +20,7 @@ export function WalletConnectSheet({ children }: WalletConnectSheetProps) {
   const { connectors, connect, status } = useConnect();
   const { isConnected } = useAccount();
 
-  const handleConnect = (connector: any) => {
+  const handleConnect = (connector: Connector) => {
     connect({ connector });
     setOpen(false);
   };
@@ -55,15 +55,7 @@ export function WalletConnectSheet({ children }: WalletConnectSheetProps) {
 
         <div className="mt-8">
           <p className="text-gray-400 text-sm">
-            Don't have a wallet?{" "}
-            <a
-              href="https://metamask.io/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gradient-rainbow font-semibold"
-            >
-              Learn more
-            </a>
+            Don&apos;t have a wallet? Download one from the options above.
           </p>
         </div>
       </SheetContent>

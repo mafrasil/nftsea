@@ -11,7 +11,7 @@ import { ChevronDown, Copy, ExternalLink, LogOut } from "lucide-react";
 import { useAccount, useDisconnect } from "wagmi";
 
 export function ConnectedWallet() {
-  const { address, chainId } = useAccount();
+  const { address } = useAccount();
   const { disconnect } = useDisconnect();
 
   const shortenAddress = (addr: string) => {

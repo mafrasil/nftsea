@@ -25,7 +25,9 @@ export async function uploadImageToIPFS(formData: FormData): Promise<string> {
   }
 }
 
-export async function uploadJSONToIPFS(metadata: any): Promise<string> {
+export async function uploadJSONToIPFS(
+  metadata: Record<string, unknown>
+): Promise<string> {
   try {
     const upload = await pinata.upload.public.json(metadata);
     const cleanURL = `ipfs://${upload.cid}`;
@@ -43,12 +45,7 @@ export async function uploadMetadataToIPFS(
   imageIPFSUrl: string,
   customAttributes?: Array<{ trait_type: string; value: string }>
 ): Promise<string> {
-  console.log("Creating metadata with:", {
-    title,
-    description,
-    imageIPFSUrl,
-    customAttributes,
-  });
+  console.log("🔍 DEBUG: Creating metadata with imageIPFSUrl:", imageIPFSUrl);
 
   const validatedMetadata = await validateAndCreateMetadata(
     title,

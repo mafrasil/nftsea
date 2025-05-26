@@ -1,6 +1,7 @@
 "use client";
 
 import { getCachedIPFSMetadata } from "@/app/actions/cached-ipfs";
+import { alchemy, type AlchemyNFT } from "@/lib/alchemy";
 import { NFTMetadata } from "@/types/nft";
 import { useQuery } from "@tanstack/react-query";
 import { useAccount, usePublicClient } from "wagmi";
@@ -12,6 +13,9 @@ interface UserNFT {
   metadata?: NFTMetadata;
 }
 
+/*
+ * Original Method: based on blockchain events, slower, limited to 10k blocks (1-2 days of data)
+ */
 export function useUserNFTs() {
   const { address, isConnected } = useAccount();
   const publicClient = usePublicClient();
@@ -24,7 +28,6 @@ export function useUserNFTs() {
       }
       if (!data) console.log("🔄 Fetching NFTs for", address);
 
-      // Get user's NFT balance
       const userBalance = await publicClient.readContract({
         address: process.env.NEXT_PUBLIC_NFT_ADDRESS as `0x${string}`,
         abi: NFT_ABI.abi,
@@ -37,7 +40,6 @@ export function useUserNFTs() {
         return { nfts: [], balance: 0 };
       }
 
-      // Reduce block range for faster queries
       const blockNumber = await publicClient.getBlockNumber();
       const fromBlock = blockNumber - BigInt(10_000);
 
@@ -109,5 +111,71 @@ export function useUserNFTs() {
     balance: data?.balance || 0,
     loading: isLoading,
     error,
+  };
+}
+
+/*
+ * New Method: based on Alchemy API
+ */
+export function useUserNFTsAlchemy() {
+  const { address } = useAccount();
+
+  const query = useQuery({
+    queryKey: ["user-nfts-alchemy", address],
+    queryFn: async (): Promise<UserNFT[]> => {
+      if (!address) return [];
+
+      const contractAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
+      if (!contractAddress) {
+        throw new Error("Contract address not configured");
+      }
+
+      const data = await alchemy.getNFTsForOwner(address, {
+        contractAddresses: [contractAddress],
+        withMetadata: true,
+        pageSize: 100,
+      });
+
+      return data.ownedNfts.map((nft: AlchemyNFT): UserNFT => {
+        let metadata: NFTMetadata | undefined = undefined;
+
+        // 1. Check if Alchemy provided metadata at the top level
+        if (nft.metadata && Object.keys(nft.metadata).length > 0) {
+          metadata = nft.metadata as unknown as NFTMetadata;
+        }
+        // 2. Check raw.metadata
+        else if (
+          nft.raw?.metadata &&
+          Object.keys(nft.raw.metadata).length > 0
+        ) {
+          metadata = nft.raw.metadata as unknown as NFTMetadata;
+        }
+        // 3. Build metadata from individual fields if available
+        else if (nft.name || nft.description) {
+          metadata = {
+            name: nft.name || "",
+            description: nft.description || "",
+            image: nft.image?.originalUrl || nft.image?.cachedUrl || "",
+          };
+        }
+
+        return {
+          tokenId: nft.tokenId,
+          tokenURI: nft.tokenUri || nft.raw?.tokenUri || "",
+          metadata,
+        };
+      });
+    },
+    enabled: !!address,
+    staleTime: 30000,
+    refetchOnWindowFocus: false,
+  });
+
+  return {
+    nfts: query.data || [],
+    loading: query.isLoading,
+    balance: query.data?.length || 0,
+    error: query.error,
+    refetch: query.refetch,
   };
 }

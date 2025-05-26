@@ -4,6 +4,7 @@ import { uploadImageToIPFS } from "@/app/actions/ipfs";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CheckCircle, Loader2, UploadCloud, XCircle } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
 interface ImageUploadProps {
@@ -23,12 +24,32 @@ export function ImageUpload({
     "idle" | "uploading" | "success" | "error"
   >("idle");
 
+  const handleUpload = useCallback(async () => {
+    if (!selectedFile) return;
+
+    setIsUploading(true);
+    setUploadStatus("uploading");
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    try {
+      const ipfsUrl = await uploadImageToIPFS(formData);
+      onImageUploaded(ipfsUrl);
+      setUploadStatus("success");
+    } catch (error) {
+      console.error("Upload failed:", error);
+      setUploadStatus("error");
+    } finally {
+      setIsUploading(false);
+    }
+  }, [selectedFile, setIsUploading, onImageUploaded]);
+
   // Auto-upload when file is selected
   useEffect(() => {
     if (selectedFile && uploadStatus === "idle") {
       handleUpload();
     }
-  }, [selectedFile]);
+  }, [selectedFile, uploadStatus, handleUpload]);
 
   const handleFileSelect = useCallback((files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -43,27 +64,6 @@ export function ImageUpload({
     };
     reader.readAsDataURL(file);
   }, []);
-
-  const handleUpload = async () => {
-    if (!selectedFile) return;
-
-    setIsUploading(true);
-    setUploadStatus("uploading");
-
-    try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-
-      const ipfsUrl = await uploadImageToIPFS(formData);
-      onImageUploaded(ipfsUrl);
-      setUploadStatus("success");
-    } catch (error) {
-      console.error("Failed to upload image:", error);
-      setUploadStatus("error");
-    } finally {
-      setIsUploading(false);
-    }
-  };
 
   const clearSelection = () => {
     setSelectedFile(null);
@@ -91,10 +91,12 @@ export function ImageUpload({
       >
         {preview ? (
           <div className="space-y-4">
-            <img
+            <Image
               src={preview}
               alt="Preview"
-              className="max-w-full max-h-48 mx-auto rounded-lg"
+              width={200}
+              height={200}
+              className="max-w-full max-h-48 object-contain rounded-lg"
             />
 
             {/* Upload Status Indicator */}

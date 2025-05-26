@@ -19,9 +19,9 @@ export function MintingProgress({
         <h3 className="text-xl font-semibold mb-2">
           {step === "uploading" ? "Uploading to IPFS" : "Minting NFT"}
         </h3>
-        <p className="text-gray-400">
+        <p className="text-gray-300">
           {step === "uploading"
-            ? "Uploading your metadata to IPFS..."
+            ? "We&apos;re uploading your metadata to IPFS..."
             : "Confirming transaction on blockchain..."}
         </p>
       </div>
@@ -59,7 +59,7 @@ export function MintingProgress({
       </div>
 
       <div className="mt-6 text-sm text-gray-400">
-        Please don't close this window while the process is running.
+        Please don&apos;t close this window while the process is running.
       </div>
     </div>
   );

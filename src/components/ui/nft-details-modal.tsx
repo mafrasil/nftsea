@@ -1,10 +1,12 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { resolveIPFSUrl } from "@/lib/ipfs";
-import { copyToClipboard, formatAttributeValue } from "@/lib/nft";
+import { formatAttributeValue } from "@/lib/nft";
 import { NFTMetadata } from "@/types/nft";
 import { ChevronDownIcon } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 
 interface NFTDetailsModalProps {
@@ -28,34 +30,29 @@ export function NFTDetailsModal({
   if (!metadata) return null;
 
   const handleCopyToClipboard = async (text: string) => {
-    const success = await copyToClipboard(text);
-    if (success) {
+    try {
+      await navigator.clipboard.writeText(text);
       setCopiedText(text);
       setTimeout(() => setCopiedText(null), 2000);
-    }
-  };
-
-  const openOnOpenSea = () => {
-    if (contractAddress) {
-      window.open(
-        `https://testnets.opensea.io/assets/sepolia/${contractAddress}/${tokenId}`,
-        "_blank"
-      );
+    } catch (err) {
+      console.error("Failed to copy:", err);
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogTitle className="sr-only">NFT Details</DialogTitle>
-      <DialogContent className="!max-w-5xl p-6">
+      <DialogContent className="!max-w-5xl p-6 min-h-[500px]">
         <div className="flex flex-col lg:flex-row">
           {/* Left side - Image */}
           <div className="lg:w-5/12 p-6 flex items-center justify-center">
-            <div className="w-full max-w-md">
-              <img
-                src={resolveIPFSUrl(metadata.image)}
-                alt={metadata.name}
-                className="w-full aspect-square object-cover rounded-2xl shadow-2xl"
+            <div className="aspect-square relative w-full h-full">
+              <Image
+                src={resolveIPFSUrl(metadata?.image || "")}
+                alt={metadata?.name || `NFT #${tokenId}`}
+                fill
+                objectFit="contain"
+                objectPosition="center"
               />
             </div>
           </div>
@@ -83,7 +80,7 @@ export function NFTDetailsModal({
               <button
                 onClick={() => setIsDetailsOpen(!isDetailsOpen)}
                 tabIndex={-1}
-                className="w-full flex items-center justify-between p-4 bg-neutral-800/50 rounded-lg hover:bg-neutral-700/50 transition-colors"
+                className="w-full flex items-center justify-between p-4 border border-neutral-700/50 bg-neutral-800/50 rounded-lg hover:bg-neutral-700/50 transition-colors"
               >
                 <span className="text-lg font-medium">Details</span>
                 <ChevronDownIcon
@@ -107,13 +104,26 @@ export function NFTDetailsModal({
                         <span className="text-neutral-400">
                           Contract Address
                         </span>
-                        <button
-                          onClick={() => handleCopyToClipboard(contractAddress)}
-                          className="font-mono text-blue-400 hover:text-blue-300 transition-colors"
-                        >
-                          {contractAddress.slice(0, 6)}...
-                          {contractAddress.slice(-4)}
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-white text-sm">
+                            {`${contractAddress.slice(
+                              0,
+                              6
+                            )}...${contractAddress.slice(-4)}`}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              handleCopyToClipboard(contractAddress)
+                            }
+                            className="text-xs"
+                          >
+                            {copiedText === contractAddress
+                              ? "Copied!"
+                              : "Copy"}
+                          </Button>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -144,12 +154,6 @@ export function NFTDetailsModal({
                 </div>
               )}
             </div>
-
-            {copiedText && (
-              <div className="mt-4 text-center text-sm text-green-400">
-                Copied {copiedText.length > 10 ? "address" : "ID"} to clipboard!
-              </div>
-            )}
           </div>
         </div>
       </DialogContent>

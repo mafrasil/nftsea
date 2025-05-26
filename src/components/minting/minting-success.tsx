@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { resolveIPFSUrl } from "@/lib/ipfs";
 import { CheckCircle, ExternalLink } from "lucide-react";
+import Image from "next/image";
 
 interface MintingSuccessProps {
   hash?: `0x${string}`;
@@ -29,10 +30,12 @@ export function MintingSuccess({
     <div className="py-6">
       {imageUrl && (
         <div className="mb-6">
-          <img
+          <Image
             src={resolveIPFSUrl(imageUrl)}
             alt={title || "NFT"}
-            className="w-full h-48 object-cover rounded-lg"
+            width={200}
+            height={200}
+            className="w-32 h-32 object-cover rounded-lg mx-auto mb-4"
           />
         </div>
       )}

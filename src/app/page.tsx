@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/ui/hero";
 import { NFTCard } from "@/components/ui/nft-card";
-import { useUserNFTs } from "@/hooks/useUserNFTs";
+import { useUserNFTsAlchemy } from "@/hooks/useUserNFTs";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -12,7 +12,9 @@ import { useAccount } from "wagmi";
 function ExplorerPage() {
   const { isConnected } = useAccount();
   const [mounted, setMounted] = useState(false);
-  const { nfts, loading, balance } = useUserNFTs();
+  const { nfts, loading, balance } = useUserNFTsAlchemy();
+
+  console.log(nfts);
 
   // Prevent hydration mismatch
   useEffect(() => {
@@ -59,7 +61,7 @@ function ExplorerPage() {
           ) : balance === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-300 text-lg mb-4">
-                You don't own any NFTs from this collection yet.
+                You don&apos;t own any NFTs from this collection yet.
               </p>
               <Link href="/mint">
                 <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
