@@ -2,6 +2,8 @@
 
 Simple demo project (Next.js, Tailwind, Shadcn UI, Wagmi, React Query) that demonstrates how to connect to a custom wallet and mint NFTs.
 
+Preview: https://nftsea-five.vercel.app/
+
 # Fetching Implementation Notes
 
 ### Current Implementation (Dual Approach)
