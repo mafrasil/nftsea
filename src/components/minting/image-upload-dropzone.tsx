@@ -90,7 +90,7 @@ export function ImageUpload({
         }}
       >
         {preview ? (
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col items-center justify-center">
             <Image
               src={preview}
               alt="Preview"

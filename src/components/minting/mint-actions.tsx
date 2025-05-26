@@ -10,7 +10,7 @@ interface MintActionsProps {
 
 export function MintActions({ onMint, disabled, isLoading }: MintActionsProps) {
   return (
-    <div className="flex gap-4 pt-6">
+    <div className="flex flex-col md:flex-row gap-4 pt-6">
       <Button
         variant="outline"
         className="flex-1 h-14 font-semibold bg-transparent border-gray-600 text-white hover:bg-gray-800"
