@@ -1,6 +1,6 @@
 "use client";
 
-import { uploadMetadataToIPFS } from "@/app/actions/ipfs";
+import { uploadMetadataToIPFS } from "@/actions/ipfs";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";

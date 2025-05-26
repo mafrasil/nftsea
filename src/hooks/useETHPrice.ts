@@ -1,6 +1,6 @@
 "use client";
 
-import { getETHPrice } from "@/app/actions/price";
+import { getETHPrice } from "@/actions/price";
 import { useQuery } from "@tanstack/react-query";
 
 export function useETHPrice() {

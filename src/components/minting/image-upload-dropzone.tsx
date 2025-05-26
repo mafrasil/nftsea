@@ -1,6 +1,6 @@
 "use client";
 
-import { uploadImageToIPFS } from "@/app/actions/ipfs";
+import { uploadImageToIPFS } from "@/actions/ipfs";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CheckCircle, Loader2, UploadCloud, XCircle } from "lucide-react";

@@ -1,6 +1,6 @@
 "use client";
 
-import { getCachedIPFSMetadata } from "@/app/actions/cached-ipfs";
+import { getCachedIPFSMetadata } from "@/actions/cached-ipfs";
 import { alchemy, type AlchemyNFT } from "@/lib/alchemy";
 import { NFTMetadata } from "@/types/nft";
 import { useQuery } from "@tanstack/react-query";
