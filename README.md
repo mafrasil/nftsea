@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## NFT SEA [Demo Project]
 
-## Getting Started
+Simple demo project (Next.js, Tailwind, Shadcn UI, Wagmi, React Query) that demonstrates how to connect to a custom wallet and mint NFTs.
 
-First, run the development server:
+# Fetching Implementation Notes
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Current Implementation: Event-Based Fetching
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`useUserNFTs` hook implements NFT fetching by querying blockchain Transfer events (approach was chosen due to limitations in the ERC-721 standard and the specific contract implementation)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### Known Limitations
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Block Range Limitation**: Currently limited to the last 10,000 blocks
+- **Incomplete History**: NFTs received before this block range won't be detected
+- **Performance**: Multiple contract calls required for ownership verification + performance varies based on RPC provider and network congestion
 
-## Learn More
+#### Alternative Approaches Considered
 
-To learn more about Next.js, take a look at the following resources:
+**1. ERC-721 Enumerable Extension**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Much simpler implementation using `tokenOfOwnerByIndex()`, but not supported by the current contract implementation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**2. The Graph Protocol**
 
-## Deploy on Vercel
+Decentralized indexing, fast queries, real-time updates, GraphQL API
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**3. Centralized Indexing Services**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Alchemy NFT API**: `alchemy.nft.getNftsForOwner()`
+- **Moralis**: Built-in NFT queries with caching
+
+#### Current Implementation Rationale
+
+The event-based approach was implemented to:
+
+- Demonstrate understanding of blockchain event querying
+- Avoid external API dependencies
+- Work with any ERC-721 contract (not requiring Enumerable extension)
+- Maintain full control over the data fetching logic
