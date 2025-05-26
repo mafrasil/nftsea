@@ -35,9 +35,8 @@ export function ImageUpload({
 
     const file = files[0];
     setSelectedFile(file);
-    setUploadStatus("idle"); // Reset status for new file
+    setUploadStatus("idle");
 
-    // Create preview
     const reader = new FileReader();
     reader.onload = () => {
       setPreview(reader.result as string);

@@ -2,7 +2,7 @@
 
 import { uploadMetadataToIPFS } from "@/app/actions/ipfs";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useNFTMint } from "@/hooks/useNFTContract";
@@ -42,6 +42,7 @@ export function MintingForm() {
   const [customAttributes, setCustomAttributes] = useState<CustomAttribute[]>([
     { trait_type: "", value: "" },
   ]);
+  const [imageUploadKey, setImageUploadKey] = useState(0);
 
   const handleImageUploaded = (ipfsUrl: string) => {
     setImageIPFSUrl(ipfsUrl);
@@ -102,7 +103,7 @@ export function MintingForm() {
       return "Transaction failed. The contract rejected the transaction";
     }
 
-    // For other errors, try to extract a cleaner message
+    // For other errors, try to extract a message
     if (errorMessage.includes("Details:")) {
       const details = errorMessage.split("Details:")[1];
       if (details) {
@@ -134,7 +135,7 @@ export function MintingForm() {
       setIsMinting(true);
 
       // Wait for the transaction to be sent
-      const txHash = await mint(address, metadataIPFSUrl);
+      // const txHash = await mint(address, metadataIPFSUrl);
 
       // Keep minting state until transaction is confirmed
       // The success will be handled by the useEffect below
@@ -177,6 +178,7 @@ export function MintingForm() {
     setIsUploadingMetadata(false);
     setIsMinting(false);
     setIsImageUploading(false);
+    setImageUploadKey((prev) => prev + 1);
   };
 
   const resetToForm = () => {
@@ -194,6 +196,7 @@ export function MintingForm() {
       {/* Form always visible */}
       <div className="space-y-6">
         <ImageUpload
+          key={imageUploadKey}
           onImageUploaded={handleImageUploaded}
           isUploading={isImageUploading}
           setIsUploading={setIsImageUploading}
@@ -276,7 +279,6 @@ export function MintingForm() {
         />
       </div>
 
-      {/* Dialog only shows when not on form step */}
       <Dialog
         open={step !== "form"}
         onOpenChange={(open) => {
@@ -286,6 +288,7 @@ export function MintingForm() {
           }
         }}
       >
+        <DialogTitle className="sr-only">Minting NFT</DialogTitle>
         <DialogContent className="max-w-md bg-black text-white">
           {step === "uploading" || step === "minting" ? (
             <MintingProgress

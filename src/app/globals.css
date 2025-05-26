@@ -120,9 +120,11 @@
   body {
     @apply bg-background text-foreground font-open-sans;
   }
+  button {
+    @apply cursor-pointer;
+  }
 }
 
-/* Custom text gradient matching your Figma design */
 @layer utilities {
   .text-gradient-hero {
     background: linear-gradient(
@@ -132,6 +134,12 @@
       #f2f2f2 63%,
       #949494 100%
     );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-gradient-rainbow {
+    background: linear-gradient(90deg, #627eea 0%, #627eea 60%, #ec4467 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

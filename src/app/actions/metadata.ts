@@ -26,17 +26,14 @@ export async function validateAndCreateMetadata(
   customAttributes?: Array<{ trait_type: string; value: string }>
 ) {
   try {
-    // Sanitize inputs
     const sanitizedData = {
       name: title.trim(),
       description: description.trim(),
       image: imageIPFSUrl.trim(),
     };
 
-    // Build attributes array
     const attributes: { trait_type: string; value: string }[] = [];
 
-    // Add custom attributes first
     if (customAttributes && customAttributes.length > 0) {
       customAttributes.forEach((attr) => {
         if (attr.trait_type.trim() && attr.value.trim()) {

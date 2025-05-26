@@ -1,10 +1,10 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
+import { useETHPrice } from "@/hooks/useETHPrice";
 import { resolveIPFSUrl } from "@/lib/ipfs";
-import { formatAttributeValue, getTraitStyle } from "@/lib/nft";
 import { NFTMetadata } from "@/types/nft";
 import { useState } from "react";
+import { EthIcon } from "../icons/eth";
 import { NFTDetailsModal } from "./nft-details-modal";
 
 interface NFTCardProps {
@@ -15,52 +15,58 @@ interface NFTCardProps {
 
 export function NFTCard({ tokenId, metadata, contractAddress }: NFTCardProps) {
   const [showModal, setShowModal] = useState(false);
+  const { data: ethPrice, isLoading: priceLoading } = useETHPrice();
 
   if (!metadata) return null;
+
+  // Random ETH amount between 0.1 and 25
+  const fakeETHAmount = Math.random() * 24.9 + 0.1;
+  const fakeUsdPrice = ethPrice
+    ? `$${(fakeETHAmount * ethPrice).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+    : "$3,410.32"; // fallback
 
   return (
     <>
       <div
-        className="bg-white/15 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+        className="bg-white/15 rounded-lg backdrop-blur-lg group/nft-card cursor-pointer hover:scale-[1.025] transition-all duration-300"
         onClick={() => setShowModal(true)}
       >
-        <div className="aspect-square relative">
+        {/* NFT Image */}
+        <div className="aspect-[255/214] relative bg-gradient-to-br from-gray-100 to-gray-200 m-3 rounded-xl overflow-hidden">
           <img
             src={resolveIPFSUrl(metadata.image)}
             alt={metadata.name}
             className="w-full h-full object-cover"
           />
-          <div className="absolute top-2 right-2 bg-black/50 rounded-lg px-2 py-1">
+          <div className="absolute top-2 right-2 bg-black/50 group-hover/nft-card:bg-black/70 transition-all duration-300 rounded-lg px-2 py-1 opacity-0 group-hover/nft-card:opacity-100">
             <span className="text-xs text-gray-300">#{tokenId}</span>
           </div>
         </div>
 
-        <div className="p-4">
-          <h3 className="text-lg font-semibold text-white mb-2 truncate">
+        {/* Content */}
+        <div className="px-4">
+          <h3 className="text-2xl font-bold text-white tracking-wide font-cinzel">
             {metadata.name}
           </h3>
-          <p className="text-gray-400 text-sm mb-3 line-clamp-2">
-            {metadata.description}
-          </p>
 
-          {metadata.attributes && metadata.attributes.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-3">
-              {metadata.attributes.slice(0, 3).map((attr, index) => (
-                <Badge
-                  key={index}
-                  variant="outline"
-                  className={`text-xs ${getTraitStyle(attr)}`}
-                >
-                  {attr.trait_type}: {formatAttributeValue(attr)}
-                </Badge>
-              ))}
-              {metadata.attributes.length > 3 && (
-                <Badge variant="outline" className="text-xs text-gray-400">
-                  +{metadata.attributes.length - 3} more
-                </Badge>
-              )}
+          {/* Current Price Section */}
+          <div className="mb-4">
+            <p className="text-gray-300 text-sm mb-2 font-thin">
+              Current Price
+            </p>
+            <div className="flex items-center gap-2">
+              <EthIcon size={24} withCircle />
+              <span className="text-xl font-bold text-[#EC4467] font-cinzel">
+                {fakeETHAmount.toFixed(2)} ETH
+              </span>
+              <span className="text-gray-400 text-base">
+                {priceLoading ? "(Loading...)" : `(${fakeUsdPrice})`}
+              </span>
             </div>
-          )}
+          </div>
         </div>
       </div>
 

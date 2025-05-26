@@ -17,7 +17,6 @@ export const useNFTMint = () => {
       });
       return hash;
     } catch (error) {
-      // This will catch user rejection and other errors
       throw error;
     }
   };

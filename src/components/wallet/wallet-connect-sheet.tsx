@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -8,7 +7,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { X } from "lucide-react";
 import { useState } from "react";
 import { useAccount, useConnect } from "wagmi";
 import { WalletOption } from "./wallet-option";
@@ -27,7 +25,6 @@ export function WalletConnectSheet({ children }: WalletConnectSheetProps) {
     setOpen(false);
   };
 
-  // Close sheet if user gets connected
   if (isConnected && open) {
     setOpen(false);
   }
@@ -43,14 +40,6 @@ export function WalletConnectSheet({ children }: WalletConnectSheetProps) {
           <SheetTitle className="text-2xl font-bold text-white">
             Connect Wallet
           </SheetTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setOpen(false)}
-            className="text-white hover:bg-gray-800"
-          >
-            <X className="h-5 w-5" />
-          </Button>
         </SheetHeader>
 
         <div className="space-y-3">
@@ -64,14 +53,14 @@ export function WalletConnectSheet({ children }: WalletConnectSheetProps) {
           ))}
         </div>
 
-        <div className="mt-8 pt-6 border-t border-gray-800">
+        <div className="mt-8">
           <p className="text-gray-400 text-sm">
             Don't have a wallet?{" "}
             <a
               href="https://metamask.io/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300"
+              className="text-gradient-rainbow font-semibold"
             >
               Learn more
             </a>

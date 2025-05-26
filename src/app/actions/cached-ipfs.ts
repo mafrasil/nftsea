@@ -10,7 +10,7 @@ export const getCachedIPFSMetadata = unstable_cache(
   },
   ["ipfs-metadata"],
   {
-    revalidate: 300, // 5 minutes
+    revalidate: 300,
     tags: ["ipfs-metadata"],
   }
 );

@@ -33,7 +33,17 @@ Decentralized indexing, fast queries, real-time updates, GraphQL API
 
 The event-based approach was implemented to:
 
-- Demonstrate understanding of blockchain event querying
-- Avoid external API dependencies
+- Avoid external API dependencies (understanding of blockchain events)
 - Work with any ERC-721 contract (not requiring Enumerable extension)
 - Maintain full control over the data fetching logic
+
+## Quick Notes
+
+- Uses Sepolia testnet (get some test ETH first)
+- Pinata handles IPFS storage (because decentralization rocks)
+- ETH price display because why not (Bandchain Oracle)
+- Event-based NFT fetching
+
+## Tech Stack
+
+Next.js 14, TypeScript, Tailwind, Wagmi, React Query, Pinata

@@ -13,7 +13,7 @@ export function MintActions({ onMint, disabled, isLoading }: MintActionsProps) {
     <div className="flex gap-4 pt-6">
       <Button
         variant="outline"
-        className="flex-1 h-14 bg-transparent border-gray-600 text-white hover:bg-gray-800"
+        className="flex-1 h-14 font-semibold bg-transparent border-gray-600 text-white hover:bg-gray-800"
         onClick={() => onMint(false)}
         disabled={disabled || isLoading}
       >
@@ -21,7 +21,7 @@ export function MintActions({ onMint, disabled, isLoading }: MintActionsProps) {
       </Button>
       <Button
         variant="gradient"
-        className="flex-1 h-14"
+        className="flex-1 h-14 font-semibold"
         onClick={() => onMint(true)}
         disabled={disabled || isLoading}
       >

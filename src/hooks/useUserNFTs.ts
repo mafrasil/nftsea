@@ -39,9 +39,9 @@ export function useUserNFTs() {
 
       // Reduce block range for faster queries
       const blockNumber = await publicClient.getBlockNumber();
-      const fromBlock = blockNumber - BigInt(5000); // Reduced from 10k to 5k
+      const fromBlock = blockNumber - BigInt(10_000);
 
-      console.log(`🔍 Checking ${5000} blocks for Transfer events`);
+      console.log(`🔍 Checking ${10_000} blocks for Transfer events`);
 
       const transferEvents = await publicClient.getLogs({
         address: process.env.NEXT_PUBLIC_NFT_ADDRESS as `0x${string}`,

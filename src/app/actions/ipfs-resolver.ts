@@ -3,7 +3,6 @@
 export async function resolveIPFSUrl(ipfsUrl: string): Promise<string> {
   console.log("Resolving IPFS URL:", ipfsUrl);
 
-  // Handle different URL formats
   if (!ipfsUrl) {
     throw new Error("No URL provided");
   }
@@ -11,7 +10,7 @@ export async function resolveIPFSUrl(ipfsUrl: string): Promise<string> {
   // Fix malformed URLs that have both HTTP gateway and ipfs:// protocol
   if (ipfsUrl.includes("/ipfs/ipfs://")) {
     console.log("Detected malformed URL with double protocol, fixing...");
-    // Extract the CID after the ipfs:// part
+
     const cidMatch = ipfsUrl.match(/ipfs:\/\/([a-zA-Z0-9]+)/);
     if (cidMatch) {
       const cid = cidMatch[1];
@@ -46,6 +45,7 @@ export async function resolveIPFSUrl(ipfsUrl: string): Promise<string> {
   }
 
   const cid = ipfsUrl.replace("ipfs://", "");
+
   // Remove trailing slash from gateway URL to prevent double slashes
   const gateway = process.env.NEXT_PUBLIC_PINATA_GATEWAY!.replace(/\/$/, "");
   const gatewayUrl = `${gateway}/ipfs/${cid}`;

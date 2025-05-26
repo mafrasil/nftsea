@@ -21,7 +21,7 @@ function ExplorerPage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen text-white">
+      <div className="text-white">
         <Hero>Listing Owned NFTs</Hero>
         <div className="container mx-auto text-center text-sm my-12">
           <p>Loading...</p>
@@ -31,7 +31,7 @@ function ExplorerPage() {
   }
 
   return (
-    <div className="min-h-screen text-white">
+    <div className="text-white">
       {/* Hero Section */}
       <Hero>Listing Owned NFTs</Hero>
 
@@ -87,9 +87,9 @@ function ExplorerPage() {
         <Button
           size="lg"
           variant="gradient"
-          className="fixed bottom-6 right-6 rounded-full h-14 w-14 cursor-pointer"
+          className="fixed bottom-6 right-6 hover:scale-110 transition-transform duration-300 rounded-full h-14 w-14 cursor-pointer group/btn"
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="size-5 group-hover/btn:rotate-90 transition-transform duration-300" />
         </Button>
       </Link>
     </div>

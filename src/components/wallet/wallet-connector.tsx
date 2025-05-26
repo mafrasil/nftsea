@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { WalletIcon } from "lucide-react";
 import { useAccount } from "wagmi";
 import { ConnectedWallet } from "./connected-wallet";
 import { WalletConnectSheet } from "./wallet-connect-sheet";
@@ -14,7 +15,9 @@ export function WalletConnector() {
 
   return (
     <WalletConnectSheet>
-      <Button variant="outline">Connect Wallet</Button>
+      <Button variant="ghost">
+        <WalletIcon className="w-4 h-4" />
+      </Button>
     </WalletConnectSheet>
   );
 }

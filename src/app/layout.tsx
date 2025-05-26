@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cinzel, Open_Sans } from "next/font/google";
 import "./globals.css";
 
+import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import QueryProvider from "@/components/providers/query-provider";
 import { GradientBackground } from "@/components/ui/gradient-background";
@@ -38,13 +39,16 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${openSans.variable} ${cinzel.variable} dark antialiased min-h-screen relative`}
+        className={`${openSans.variable} ${cinzel.variable} dark antialiased relative min-h-screen flex flex-col`}
       >
         <QueryProvider>
           <GradientBackground />
           <Providers initialState={initialState}>
             <Header />
-            <main className="relative z-10">{children}</main>
+            <main className="relative z-10 flex-1 flex flex-col">
+              {children}
+            </main>
+            <Footer />
           </Providers>
         </QueryProvider>
       </body>

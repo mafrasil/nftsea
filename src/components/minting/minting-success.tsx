@@ -19,6 +19,12 @@ export function MintingSuccess({
   description,
   imageUrl,
 }: MintingSuccessProps) {
+  const handleViewCollection = () => {
+    onMintAnother(); // This will reset the form
+    // Navigate to homepage
+    window.location.href = "/";
+  };
+
   return (
     <div className="py-6">
       {imageUrl && (
@@ -60,12 +66,17 @@ export function MintingSuccess({
         <p className="text-gray-300 mb-6 text-left">{description}</p>
       )}
 
-      <Button
-        onClick={onMintAnother}
-        className="w-full bg-gradient-to-r from-purple-500 to-blue-500"
-      >
-        Continue
-      </Button>
+      <div className="flex gap-3 justify-center">
+        <Button variant="outline" onClick={onMintAnother}>
+          Mint Another
+        </Button>
+        <Button
+          onClick={handleViewCollection}
+          className="bg-gradient-to-r from-purple-500 to-blue-500"
+        >
+          View Collection
+        </Button>
+      </div>
     </div>
   );
 }
