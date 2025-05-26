@@ -12,12 +12,16 @@ export const useNFTMint = () => {
   });
 
   const mint = async (to: string, uri: string) => {
+    // Extract just the CID from the ipfs:// URL
     const cid = uri.replace("ipfs://", "");
+
+    console.log("🔍 DEBUG: Calling contract mint with:", { to, uri: cid });
+
     const hash = await writeContractAsync({
       address: process.env.NEXT_PUBLIC_NFT_ADDRESS as `0x${string}`,
       abi: NFT_ABI.abi,
       functionName: "mint",
-      args: [to, cid],
+      args: [to, cid], // Pass just the CID, not the full ipfs:// URL
     });
 
     return hash;

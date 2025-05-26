@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useContractBaseURI, useNFTMint } from "@/hooks/useNFTContract";
+import { useNFTMint } from "@/hooks/useNFTContract";
 import { Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
@@ -24,13 +24,12 @@ interface CustomAttribute {
 export function MintingForm() {
   const { address } = useAccount();
   const {
-    // mint,
+    mint,
     isConfirming,
     isSuccess,
     hash,
     error: mintError,
   } = useNFTMint();
-  const { data: baseURI } = useContractBaseURI();
 
   const [step, setStep] = useState<MintingStep>("form");
   const [title, setTitle] = useState("");
@@ -104,7 +103,7 @@ export function MintingForm() {
       return "Transaction failed. The contract rejected the transaction";
     }
 
-    // For other errors, try to extract a message
+    // For other errors, try to extract a cleaner message
     if (errorMessage.includes("Details:")) {
       const details = errorMessage.split("Details:")[1];
       if (details) {
@@ -139,7 +138,11 @@ export function MintingForm() {
       setStep("minting");
       setIsMinting(true);
 
-      // const hash = await mint(address!, metadataIPFSUrl);
+      // Wait for the transaction to be sent
+      await mint(address, metadataIPFSUrl);
+
+      // Keep minting state until transaction is confirmed
+      // The success will be handled by the useEffect below
     } catch (error) {
       console.error("Minting failed:", error);
       const friendlyMessage = parseErrorMessage(error);
@@ -191,8 +194,6 @@ export function MintingForm() {
   };
 
   const canMint = title && description && imageIPFSUrl && !isImageUploading;
-
-  console.log("🔍 DEBUG: Contract baseURI:", baseURI);
 
   return (
     <>
@@ -282,9 +283,11 @@ export function MintingForm() {
         />
       </div>
 
+      {/* Dialog only shows when not on form step */}
       <Dialog
         open={step !== "form"}
         onOpenChange={(open) => {
+          // Allow closing the dialog to reset to form state
           if (!open) {
             resetToForm();
           }
